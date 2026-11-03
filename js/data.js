@@ -151,6 +151,6 @@ export const eleves = [
     groupeId: 3,
     telephoneParent: "0655566677",
     absences: 3,
-    notes: []
+    notes: [12,10]
   }
 ];
