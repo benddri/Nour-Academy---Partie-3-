@@ -30,6 +30,7 @@ function filterEleve() {
                 eleve.groupeId === Number(filterGroupe.value)
             )
         );
+
     });
 
     // Trier par nom
@@ -253,6 +254,9 @@ function filterEleve() {
         labelNote.appendChild(inputNote);
 
         // Bouton ajouter note
+
+
+
         const btnajoutNote = document.createElement("button");
 
         btnajoutNote.type = "button";
@@ -271,6 +275,12 @@ function filterEleve() {
             "hover:bg-brand",
             "sm:px-4"
         );
+        const message=document.createElement("p")
+        message.textContent ="la note doit etre entre 0 et 20"
+        message.dataset.role="message"
+        message.hidden=true
+        inputNote.value="";
+       
 
         actions.appendChild(btnAbsence);
         actions.appendChild(labelNote);
@@ -281,9 +291,10 @@ function filterEleve() {
 
         contenu.appendChild(btnFiche);
         contenu.appendChild(actions);
-
+        
         ligne.appendChild(contenu);
-
+        
+        ligne.appendChild(message)
 
         return ligne;
     });
@@ -330,29 +341,32 @@ listeEleves.addEventListener("click", function(event) {
             initiales.classList.add("bg-alert", "text-white");
         }
     }
+    if (action ==="note"){
+        const inputNote  =ligne.querySelector('[data-role="note"]')
+        const message=ligne.querySelector('[data-role="message"]')
+        const valeur = inputNote.value.trim()
+        const note =Number (valeur)
+        if(valeur===""||! Number.isFinite(note) || note>20||note<0){
+    message.hidden=false
+    return
+            }
 
-    // Ajouter une note
-    if (action === "note") {
-        const inputNote = ligne.querySelector('[data-role="note"]');
-    
 
-        const valeur = inputNote.value.trim();
-        const note = Number(valeur);
 
-        
-
-        // Recalculer la moyenne
-        const total = eleve.notes.reduce(function(acc, n) {
-            return acc + n;
-        }, 0);
-
-        const moyenne = total / eleve.notes.length;
-
-        const moyenneEl = ligne.querySelector('[data-role="moyenne"]');
-
-        moyenneEl.textContent =
-            `${moyenne.toLocaleString("fr-FR")} / 20`;
+        eleve.notes.push(note);
+        const total =eleve .notes.reduce(function(acc,n){
+            return acc +n
+        },0)
+        const moyenne=total/ eleve.notes.length
+        const moyenneEl=ligne .querySelector('[data-role="moyenne"]')
+         moyenneEl.textContent=`${moyenne.toLocaleString("moyenne")}/20`
+         message.hidden=true
+         inputNote.value=""
     }
+  
+
+
+
 });
 
 filterEleve();
