@@ -7,7 +7,76 @@ const filterGroupe = document.getElementById("filtre-groupe");
 const trieEleve = document.getElementById("tri");
 const compteur = document.getElementById("compteur");
 const aucunResultat = document.getElementById("aucun-resultat");
+const formEleve =document.getElementById("form-eleve")
+const groupeEleve=document.getElementById("groupe")
 
+// form eleve
+formEleve.addEventListener("submit",function(event){
+    event.preventDefault()
+   const prenom=document.getElementById("prenom").value.trim()
+   const nom=document.getElementById("nom").value.trim()
+   const groupe=groupeEleve.value
+   const email=document.getElementById("email").value.trim()
+   const telephone=document.getElementById("telephone").value.trim()
+   const code =document.getElementById("code").value.trim()
+   const regexPrenom = /^[A-Za-zÀ-ÿ\s-]{2,}$/;
+
+if (!regexPrenom.test(prenom)) {
+    console.log("Prénom invalide");
+    return;
+}
+if (!regexPrenom.test(nom)) {
+    console.log("nom invalide");
+    return;
+}
+if (groupe === "") {
+    console.log("Veuillez choisir un groupe");
+    return;
+}
+const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!regexEmail.test(email)) {
+    console.log("Email invalide");
+    return;
+}
+const regexTelephone = /^(?:(?:\+212|00212)[67]|0[67])[0-9]{8}$/;
+
+if (!regexTelephone.test(telephone)) {
+    console.log("Téléphone invalide");
+    return;
+}
+const regexCode = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/;
+
+if (!regexCode.test(code)) {
+    console.log("Code invalide");
+    return;
+}
+const nouvelEleve={
+    id:eleves.length+1,
+    prenom:prenom,
+    nom:nom,
+    groupeId:Number(groupe),
+    telephoneParent:telephone,
+     absences:0,
+     notes:[]
+}
+const numdansGroup=eleves.filter(function(eleve){
+    return eleve.groupeId=== Number(groupe)
+}).length
+if (numdansGroup>=15){
+const formErreur = document.getElementById("form-erreur");
+
+formErreur.textContent = "Code invalide";
+formErreur.hidden = false;
+    return
+}
+eleves.push(nouvelEleve)
+filterEleve()
+const formsucces=document.getElementById("form-succes")
+formsucces.hidden=false
+formEleve.reset()
+  
+})
 // Remplir les groupes
 groupes.forEach(function(groupe) {
     const option = document.createElement("option");
@@ -187,7 +256,7 @@ function filterEleve() {
             const moyenne = total / eleve.notes.length;
 
             moyenneEl.textContent =
-                `${moyenne.toLocaleString("fr-FR")} / 20`;
+              moyenneEl.textContent = `${moyenne.toFixed(2).replace(".", ",")}/20`;
         }
 
         btnFiche.appendChild(initiales);
@@ -359,14 +428,22 @@ listeEleves.addEventListener("click", function(event) {
         },0)
         const moyenne=total/ eleve.notes.length
         const moyenneEl=ligne .querySelector('[data-role="moyenne"]')
-         moyenneEl.textContent=`${moyenne.toLocaleString("moyenne")}/20`
+        moyenneEl.textContent = `${moyenne.toFixed(2)}/20`;
+
          message.hidden=true
          inputNote.value=""
     }
-  
+    
+    
+    
+    
+});
+groupes.forEach(function(groupe) {
+    const optionEL = document.createElement("option");
+    optionEL.value = groupe.id;
+    optionEL.textContent = groupe.nom;
 
-
-
+    groupeEleve.appendChild(optionEL);
 });
 
 filterEleve();
