@@ -7,83 +7,110 @@ const filterGroupe = document.getElementById("filtre-groupe");
 const trieEleve = document.getElementById("tri");
 const compteur = document.getElementById("compteur");
 const aucunResultat = document.getElementById("aucun-resultat");
-const formEleve =document.getElementById("form-eleve")
 const groupeEleve=document.getElementById("groupe")
-
-// form eleve
+const formEleve =document.getElementById("form-eleve")
 formEleve.addEventListener("submit",function(event){
     event.preventDefault()
-   const prenom=document.getElementById("prenom").value.trim()
-   const nom=document.getElementById("nom").value.trim()
-   const groupe=groupeEleve.value
-   const email=document.getElementById("email").value.trim()
-   const telephone=document.getElementById("telephone").value.trim()
-   const code =document.getElementById("code").value.trim()
-   const regexPrenom = /^[A-Za-zÀ-ÿ\s-]{2,}$/;
+    const prenom=document.getElementById("prenom").value.trim()
+    const nom =document.getElementById("nom").value.trim()
+    const groupe =document.getElementById("groupe").value.trim()
+    const email =document.getElementById("email").value.trim()
+    const telephone=document.getElementById("telephone").value.trim()
+    const code=document.getElementById("code").value.trim()
+    const regexPrenom= /^[A-Za-zÀ-ÿ\s-]{2,}$/
+    const prenomMsg=document.getElementById("prenom-msg")
+    prenomMsg.textContent="Prenom valide"
+    prenomMsg.classList.remove("text-red-600")
+    if(!regexPrenom.test(prenom)){
+        prenomMsg.textContent="Veuillez entrer un prénom valide";
+         prenomMsg.classList.add("text-red-600");
+    return;
+    }
+    const nomMsg=document.getElementById("nom-msg")
+    nomMsg.textContent="Nom valide"
+    nomMsg.classList.remove("text-red-600")
+    if(!regexPrenom.test(nom)){
+        nomMsg.textContent="Veuillez entrer un nom valide";
+         nomMsg.classList.add("text-red-600");
+    return;
+    }
 
-if (!regexPrenom.test(prenom)) {
-    console.log("Prénom invalide");
+    const groupeMsg=document.getElementById("groupe-msg")
+    groupeMsg.textContent="groupe de l'eleve"
+    groupeMsg.classList.remove("text-red-600")
+    if(groupe===""){
+        groupeMsg.textContent="Veuillez choisir un groupe";
+         groupeMsg.classList.add("text-red-600");
     return;
-}
-if (!regexPrenom.test(nom)) {
-    console.log("nom invalide");
-    return;
-}
-if (groupe === "") {
-    console.log("Veuillez choisir un groupe");
-    return;
-}
-const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    }
+    const emailMsg=document.getElementById("email-msg")
+   const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    emailMsg.textContent="Exemple: parent@mail.ma"
+    emailMsg.classList.remove("text-red-600")
+    if(!regexEmail.test(email)){
+        emailMsg.textContent="Veuillez entrer un email valide"
+        emailMsg.classList.add("text-red-600")
+        return
+    }
+    const telephoneMsg = document.getElementById("telephone-msg");
 
-if (!regexEmail.test(email)) {
-    console.log("Email invalide");
-    return;
-}
 const regexTelephone = /^(?:(?:\+212|00212)[67]|0[67])[0-9]{8}$/;
 
+telephoneMsg.textContent = "06 / 07 ou +212 6 / 7, puis 8 chiffres.";
+telephoneMsg.classList.remove("text-red-600");
+
 if (!regexTelephone.test(telephone)) {
-    console.log("Téléphone invalide");
+    telephoneMsg.textContent = "Veuillez entrer un numéro de téléphone valide.";
+    telephoneMsg.classList.add("text-red-600");
     return;
 }
+const codeMsg = document.getElementById("code-msg");
+
+
 const regexCode = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/;
 
+codeMsg.textContent = "8 caractères min., 1 majuscule, 1 chiffre, 1 caractère spécial.";
+codeMsg.classList.remove("text-red-600");
+
 if (!regexCode.test(code)) {
-    console.log("Code invalide");
+    codeMsg.textContent = "Le code doit contenir 8 caractères minimum, une majuscule, un chiffre et un symbole.";
+    codeMsg.classList.add("text-red-600");
     return;
 }
-const nouvelEleve={
-    id:eleves.length+1,
-    prenom:prenom,
-    nom:nom,
-    groupeId:Number(groupe),
-    telephoneParent:telephone,
-     absences:0,
-     notes:[]
-}
-const numdansGroup=eleves.filter(function(eleve){
-    return eleve.groupeId=== Number(groupe)
-}).length
-if (numdansGroup>=15){
 const formErreur = document.getElementById("form-erreur");
+formErreur.hidden = true;
 
-formErreur.textContent = "Code invalide";
-formErreur.hidden = false;
-    return
+const numdansGroup = eleves.filter(function(eleve) {
+    return eleve.groupeId === Number(groupe);
+}).length;
+
+if (numdansGroup >= 15) {
+    formErreur.textContent = "Ce groupe est complet (15 élèves).";
+    formErreur.hidden = false;
+    return;
 }
+const nouvelEleve = {
+    id: eleves.length + 1,
+    prenom: prenom,
+    nom: nom,
+    groupeId: Number(groupe),
+    telephoneParent: telephone,
+    absences: 0,
+    notes: []
+};
+
 eleves.push(nouvelEleve)
-filterEleve()
-const formsucces=document.getElementById("form-succes")
-formsucces.hidden=false
-formEleve.reset()
-  
+filterEleve();
+const formSucces = document.getElementById("form-succes");
+
+formSucces.textContent = "Élève ajouté avec succès !";
+formSucces.hidden = false;
+
+formEleve.reset();
 })
-// Remplir les groupes
-groupes.forEach(function(groupe) {
-    const option = document.createElement("option");
-    option.value = groupe.id;
-    option.textContent = groupe.nom;
-    filterGroupe.appendChild(option);
-});
+
+//la fin de form eleve
+
 
 function filterEleve() {
     const search = recherche.value.toLowerCase().trim();
