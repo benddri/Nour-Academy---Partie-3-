@@ -466,11 +466,19 @@ listeEleves.addEventListener("click", function(event) {
     
 });
 groupes.forEach(function(groupe) {
-    const optionEL = document.createElement("option");
-    optionEL.value = groupe.id;
-    optionEL.textContent = groupe.nom;
 
-    groupeEleve.appendChild(optionEL);
+    // Options formulaire
+    const optionForm = document.createElement("option");
+    optionForm.value = groupe.id;
+    optionForm.textContent = groupe.nom;
+    groupeEleve.appendChild(optionForm);
+
+    // Options filtre
+    const optionFilter = document.createElement("option");
+    optionFilter.value = groupe.id;
+    optionFilter.textContent = groupe.nom;
+    filterGroupe.appendChild(optionFilter);
+
 });
 
 filterEleve();
