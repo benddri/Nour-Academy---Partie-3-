@@ -426,7 +426,7 @@ function filterEleve() {
     });
 }
 
-// ================bilan de groupe
+// ================bilan de groupe================================
 function bilanGroupe(){
     const totalAbsences =eleves.reduce(function(total,eleve){
         return total + eleve .absences
@@ -438,6 +438,19 @@ function bilanGroupe(){
 
     }).length
     bilanAlertes.textContent=totalAlertes
+    //appeler parent
+    const parentApeler =eleves.filter(function(eleve){
+        return eleve.absences >=3
+    })
+    listeParents.textContent=""
+    aucuneAlerte.hidden = parentApeler.length  !== 0
+    parentApeler.forEach (function(eleve){
+        const parent =document.createElement("li")
+        parent.textContent=`${eleve.prenom} ${eleve.nom}-${eleve.telephoneParent}`
+        listeParents.appendChild(parent)
+    })
+
+
     const elevesAvecLesnote=eleves.filter(function(eleve){
         return eleve.notes.length>0
     })
