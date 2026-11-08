@@ -9,6 +9,25 @@ const compteur = document.getElementById("compteur");
 const aucunResultat = document.getElementById("aucun-resultat");
 const groupeEleve=document.getElementById("groupe")
 const formEleve =document.getElementById("form-eleve")
+const bilanMoyenne = document.getElementById("bilan-moyenne");
+const bilanAbsences = document.getElementById("bilan-absences");
+const bilanAlertes = document.getElementById("bilan-alertes");
+const bilanMeilleur = document.getElementById("bilan-meilleur");
+const listeParents = document.getElementById("liste-parents");
+const aucuneAlerte = document.getElementById("aucune-alerte");
+
+
+
+
+
+
+
+
+
+
+
+
+
 formEleve.addEventListener("submit",function(event){
     event.preventDefault()
     const prenom=document.getElementById("prenom").value.trim()
@@ -67,7 +86,7 @@ if (!regexTelephone.test(telephone)) {
 const codeMsg = document.getElementById("code-msg");
 
 
-const regexCode = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/;
+const regexCode = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/;
 
 codeMsg.textContent = "8 caractères min., 1 majuscule, 1 chiffre, 1 caractère spécial.";
 codeMsg.classList.remove("text-red-600");
@@ -101,6 +120,13 @@ const nouvelEleve = {
 
 eleves.push(nouvelEleve)
 filterEleve();
+bilanGroupe()
+
+
+
+
+
+
 const formSucces = document.getElementById("form-succes");
 
 formSucces.textContent = "Élève ajouté avec succès !";
@@ -400,6 +426,34 @@ function filterEleve() {
     });
 }
 
+// ================bilan de groupe
+function bilanGroupe(){
+    const totalAbsences =eleves.reduce(function(total,eleve){
+        return total + eleve .absences
+
+    },0)
+    bilanAbsences.textContent=totalAbsences
+    const totalAlertes=eleves.filter(function(eleve){
+        return eleve.absences>=3
+
+    }).length
+    bilanAlertes.textContent=totalAlertes
+    const elevesAvecLesnote=eleves.filter(function(eleve){
+        return eleve.notes.length>0
+    })
+    const totaleLesNotes=elevesAvecLesnote.reduce(function(totale,eleve){
+        const somme =eleve.notes.reduce(function(acc,note){
+            return acc +note
+        },0)
+        return totale+somme
+    },0)
+    const nombreNote=elevesAvecLesnote.reduce(function(total,eleve){
+        return total+eleve.notes.length
+    },0)
+    const moyenneGroupe=nombreNote === 0? 0:totaleLesNotes/nombreNote
+    bilanMoyenne.textContent=moyenneGroupe.toFixed(2).replace(".",",")
+}
+
 // Event delegation
 listeEleves.addEventListener("click", function(event) {
     const bouton = event.target.closest("button");
@@ -460,6 +514,8 @@ listeEleves.addEventListener("click", function(event) {
          message.hidden=true
          inputNote.value=""
     }
+   
+    bilanGroupe()
     
     
     
@@ -482,6 +538,7 @@ groupes.forEach(function(groupe) {
 });
 
 filterEleve();
+bilanGroupe()
 
 recherche.addEventListener("input", filterEleve);
 filterGroupe.addEventListener("change", filterEleve);
